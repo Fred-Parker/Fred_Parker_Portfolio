@@ -1,7 +1,39 @@
-# Azure-Report---Paws-Whiskers
-An overview / report on how using Microsoft Azure effectively could benefit the operations of a local petshop.
+# Azure-Report---Paws & Whiskers
+-----------------------------
 
-Data Laws 
+Description / Project Overview:
+================
+----------------
+The aim of this Microsoft Azure report was outline key areas to consider when setting up an Azure database for the benefit of a small-scale local petshop business.
+
+The report is broken down in to a series of my recommendations to consider. Starting with key GDPR and data protection laws that need to be complied with, and progressing to specific suggestions on how Microsoft Azure / data analsysis could benefit the businesses day-to-day running. 
+
+Author: Fred Parker
+=======
+-------
+
+Snapshots of SQL Queries used to build tables:
+================
+----------------
+**Customer details:**
+
+![image](https://github.com/user-attachments/assets/f17a670a-51dd-4442-92b2-4fdc7cbb770e)
+
+**Pet details linked to Customers by foreign key 'customer ID':**
+![image](https://github.com/user-attachments/assets/34138214-3a90-4b1a-8938-681ae45a5232)
+
+**Product & sales tables linked to Customers by foreign key: 'Customer ID':**
+![image](https://github.com/user-attachments/assets/d5217f1f-f0b6-42e7-9a8b-a977bb45948f)
+
+**Sale Details table linked by procudt & sales IDs:**
+![image](https://github.com/user-attachments/assets/71a7ef38-b89e-474c-aded-380f536c4498)
+
+
+
+
+
+
+**Data Laws** 
 
 Storing customer data is a great way to track business strengths and weaknesses, and can greatly help with in-depth analysis of customer trends and preferences. However, it is vital that any information stored and used about customers is fully compliant with data protection laws and guidelines. At Paws & Whiskers, it is vital that your staff and analysts compiling data are aware of the law surrounding the storage and usage of your customer data. Here are a few key regulations to be aware of: 
 
@@ -37,7 +69,7 @@ Children's Data: The DPA 2018 sets the age of consent for data processing at 13 
 
 Automated Decision-Making: The DPA 2018 includes additional safeguards and provisions for automated decision-making, including profiling, which are more detailed than those in the GDPR. 
 
-In addiiton to these above regulations there are also some industry-specific recommendations I would like to make for Paws & Whiskers to consider. 
+**In addiiton to these above regulations there are also some industry-specific recommendations I would like to make for Paws & Whiskers to consider.**
 
  
 
@@ -57,7 +89,7 @@ It is my recommendation that Paws & Whiskers adhere to robust and effective cybe
 
 Cybersecurity Best Practices: Implementing strong cybersecurity measures, such as encryption, firewalls, and regular security audits, is essential to protect sensitive and payment information from unauthorized access and breaches. 
 
-Azure Service Recommendations 
+**Azure Service Recommendations**
 
  
 
@@ -132,66 +164,55 @@ Relational Model -
 Entities and Tables: 
 
 Customers: 
+-- Table: Customers
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Email VARCHAR(100),
+    PhoneNumber VARCHAR(20),
+    Address VARCHAR(255)
+);
 
-CustomerID (Primary Key) 
+-- Table: Pets
+CREATE TABLE Pets (
+    PetID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Species VARCHAR(50),
+    Breed VARCHAR(50),
+    DateOfBirth DATE,
+    CustomerID INT,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
 
-FirstName 
+-- Table: Products
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(100),
+    Category VARCHAR(50),
+    Price DECIMAL(10, 2),
+    StockQuantity INT
+);
 
-LastName 
+-- Table: Sales
+CREATE TABLE Sales (
+    SaleID INT PRIMARY KEY,
+    CustomerID INT,
+    SaleDate DATE,
+    TotalAmount DECIMAL(10, 2),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
 
-Email 
-
-PhoneNumber 
-
-Address 
-
-Pets: 
-
-PetID (Primary Key) 
-
-Name 
-
-Species 
-
-Breed 
-
-DateOfBirth 
-
-CustomerID (Foreign Key) 
-
-Products: 
-
-ProductID (Primary Key) 
-
-ProductName 
-
-Category 
-
-Price 
-
-StockQuantity 
-
-Sales: 
-
-SaleID (Primary Key) 
-
-CustomerID (Foreign Key) 
-
-SaleDate 
-
-TotalAmount 
-
-SaleDetails: 
-
-SaleDetailID (Primary Key) 
-
-SaleID (Foreign Key) 
-
-ProductID (Foreign Key) 
-
-Quantity 
-
-UnitPrice 
+-- Table: SaleDetails
+CREATE TABLE SaleDetails (
+    SaleDetailID INT PRIMARY KEY,
+    SaleID INT,
+    ProductID INT,
+    Quantity INT,
+    UnitPrice DECIMAL(10, 2),
+    FOREIGN KEY (SaleID) REFERENCES Sales(SaleID),
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
 
 Relationships: 
 
@@ -207,69 +228,31 @@ Fact and Dimension Tables:
 
 FactSales: 
 
-SaleID (Primary Key) 
+SELECT 
+    fs.SaleID,
+    fs.SaleDate,
+    fs.Quantity,
+    fs.TotalAmount,
+    dc.FirstName AS CustomerFirstName,
+    dc.LastName AS CustomerLastName,
+    dc.Email AS CustomerEmail,
+    dp.Name AS PetName,
+    dp.Species AS PetSpecies,
+    dp.Breed AS PetBreed,
+    pr.ProductName,
+    pr.Category AS ProductCategory,
+    pr.Price AS ProductPrice,
+    dd.Day,
+    dd.Month,
+    dd.Year,
+    dd.Quarter
+FROM 
+    FactSales fs
+LEFT JOIN DimCustomers dc ON fs.CustomerID = dc.CustomerID
+LEFT JOIN DimPets dp ON dc.CustomerID = dp.CustomerID
+LEFT JOIN DimProducts pr ON fs.ProductID = pr.ProductID
+LEFT JOIN DimDate dd ON fs.SaleDate = dd.Date;
 
-CustomerID 
-
-ProductID 
-
-SaleDate 
-
-Quantity 
-
-TotalAmount 
-
-DimCustomers: 
-
-CustomerID (Primary Key) 
-
-FirstName 
-
-LastName 
-
-Email 
-
-PhoneNumber 
-
-Address 
-
-DimPets: 
-
-PetID (Primary Key) 
-
-Name 
-
-Species 
-
-Breed 
-
-DateOfBirth 
-
-CustomerID 
-
-DimProducts: 
-
-ProductID (Primary Key) 
-
-ProductName 
-
-Category 
-
-Price 
-
-DimDate: 
-
-DateKey (Primary Key) 
-
-Date 
-
-Day 
-
-Month 
-
-Year 
-
-Quarter 
 
 Relationships: 
 
@@ -279,7 +262,7 @@ This structure ensures that the relational model is optimised for transactional 
 
  
 
-Data Storage Formats & Structures in Azure 
+**Data Storage Formats & Structures in Azure**
 
  
 
@@ -305,7 +288,7 @@ TLS/SSL: Azure uses Transport Layer Security (TLS) and Secure Sockets Layer (SSL
 
  
 
-Additional Considerations 
+**Additional Considerations**
 
  
 
