@@ -5,7 +5,6 @@
 <p align="center">
   I'll be updating this page regularly so be sure to follow my progress!
 </p>
-
 <hr>
 
 <h2>Table of Contents</h2>
@@ -30,4 +29,32 @@
 <p>
   - Created interactive dashboards for data visualization and insights.<br>
   - Skilled in DAX functions for complex data modeling.<br>
-  - <a href="your-project-link">View Power BI Project
+  - <a href="your-project-link">View Power BI Project</a>
+</p>
+
+<h2 id="sql">💾 SQL</h2>
+<p>
+  - Expertise in writing efficient queries for data retrieval and manipulation.<br>
+  - Experience with database design and optimization techniques.<br>
+  - <a href="your-project-link">View SQL Project</a>
+</p>
+
+<h2 id="tableau">📊 Tableau</h2>
+<p>
+  - Built dynamic visualizations and storytelling dashboards.<br>
+  - Integrated Tableau with live data sources for real-time analytics.<br>
+  - <a href="your-project-link">View Tableau Project</a>
+</p>
+
+<h2 id="python">🐍 Python</h2>
+<p>
+  - Developed Python scripts for data analysis and automation.<br>
+  - Proficient in libraries like Pandas, NumPy, Matplotlib, and Seaborn.<br>
+  - <a href="your-project-link">View Python Project</a>
+</p>
+
+<hr>
+
+<p align="center">
+  Thank you for visiting my portfolio! Feel free to explore and reach out if you'd like to connect.
+</p>
